@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+site=tiny-ssdp
+daemon=tiny-ssdp
+
+rm -f "/etc/apache2/sites-enabled/$site"
+update-rc.d -f "$daemon" remove
+

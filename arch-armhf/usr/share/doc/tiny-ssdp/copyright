@@ -1,0 +1,20 @@
+Copyright 2017 Julien Blitte <julien.blitte@gmail.com> for tiny-ssdp package.
+All rights reserved, package released under bellow restrictions and licences.
+
+Package content is under mixed license of GPL and LGPL. Unless otherwise
+stated, all files and information from tiny-ssdp package are under
+GNU General Public License v3 or greater version.
+
+All source files used to build the tiny-ssdp package are under
+GNU General Public License v3 or greater version without exception.
+
+Only files installed from the package, deployed scrictly under folders and
+subfolders /usr/lib/ssdp/ and /etc/ at package installation, are released under
+GNU Library General Public License v3 or greater version.
+
+GNU General Public License can be found at /usr/share/common-licenses/GPL-3 or
+https://www.gnu.org/licenses/gpl-3.0.html
+
+GNU Library General Public License can be found at
+/usr/share/common-licenses/LGPL-3 or https://www.gnu.org/licenses/lgpl-3.0.html
+

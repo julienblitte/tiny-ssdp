@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+  <specVersion>
+    <major>1</major>
+    <minor>0</minor>
+  </specVersion>
+  <URLBase>$URLBase</URLBase>
+  <device>
+    <deviceType>$deviceType</deviceType>
+    <friendlyName>$friendlyName</friendlyName>
+    <manufacturer>$manufacturer</manufacturer>
+    <manufacturerURL>$manufacturerURL</manufacturerURL>
+    <modelDescription>$modelDescription</modelDescription>
+    <modelName>$modelName</modelName>
+    <modelNumber>$modelNumber</modelNumber>
+    <modelURL>$modelURL</modelURL>
+    <serialNumber>$serialNumber</serialNumber>
+    <UDN>$UDN</UDN>
+    <iconList>$iconList</iconList>
+    <serviceList>$serviceList</serviceList>
+    <presentationURL>$presentationURL</presentationURL>
+  </device>
+</root>

@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -e
+
+site=tiny-ssdp
+daemon=tiny-ssdp
+
+if [ -e "/etc/apache2/sites-available/$site" -a -d "/etc/apache2/sites-enabled/" ]
+then 
+	cd "/etc/apache2/sites-enabled/"
+	[ -e "$site" ] || ln -sf "../sites-available/$site" .
+fi
+
+if [ -e /etc/init.d/apache2 ]
+then
+	invoke-rc.d apache2 restart || :
+fi
+
+update-rc.d -f "$daemon" defaults
+

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+
+daemon=tiny-ssdp
+
+invoke-rc.d "$daemon" stop || :
+

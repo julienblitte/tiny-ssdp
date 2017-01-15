@@ -1,0 +1,7 @@
+<service>
+  <serviceType>$serviceType</serviceType>
+  <serviceId>$serviceId</serviceId>
+  <SCPDURL>$SCPDURL</SCPDURL>
+  <controlURL>$controlURL</controlURL>
+  <eventSubURL>$eventSubURL</eventSubURL>
+</service>
