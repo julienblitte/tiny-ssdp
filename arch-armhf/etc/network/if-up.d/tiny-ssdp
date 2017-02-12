@@ -1,0 +1,39 @@
+#!/bin/sh
+# reload the tiny-ssh service server when an interface comes up
+NAME=tiny-ssdpd
+DAEMON=/usr/sbin/$NAME
+PIDFILE=/var/run/$NAME.pid
+
+SCRIPTFILE=tiny-ssdp
+SCRIPTNAME=/etc/init.d/$SCRIPTFILE
+
+if [ "$IFACE" = lo ]; then
+	exit 0
+fi
+
+if [ "$MODE" != start ]; then
+	exit 0
+fi
+
+if [ "$ADDRFAM" != inet ] && [ "$ADDRFAM" != inet6 ]; then
+	exit 0
+fi
+
+if [ ! -x "$SCRIPTNAME" ]; then
+	exit 0
+fi
+
+runlevel=$(runlevel|cut -d' ' -f 2)
+if [ "$runlevel" != "" ]; then
+	# should service be running at current runlevel - Note: SystemV for now
+	ls /etc/rc$runlevel.d/S* -l | grep "$SCRIPTFILE" > /dev/null
+	if [ $? -ne 0 ]; then
+		exit 0
+	fi
+fi
+
+"$SCRIPTNAME" stop
+"$SCRIPTNAME" start
+
+exit 0
+
