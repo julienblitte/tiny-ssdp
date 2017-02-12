@@ -14,11 +14,11 @@
 # PATH should only include /usr/* if it runs after the mountnfs.sh script
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC="SSDP server service"
-NAME=ssdpd
+NAME=tiny-ssdpd
 DAEMON=/usr/sbin/$NAME
 DAEMON_ARGS=
 PIDFILE=/var/run/$NAME.pid
-SCRIPTNAME=/etc/init.d/$NAME
+SCRIPTNAME=/etc/init.d/tiny-ssdp
 
 # Exit if the package is not installed
 [ -x "$DAEMON" ] || exit 0

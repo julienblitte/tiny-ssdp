@@ -10,7 +10,7 @@
 #include "ssdp.h"
 #include "logfilter.h"
 
-#define PID_FILE	"/var/run/ssdpd.pid"
+#define PID_FILE	"/var/run/tiny-ssdpd.pid"
 
 #define SIGNAL_CATCH	{SIGHUP,SIGTERM}
 

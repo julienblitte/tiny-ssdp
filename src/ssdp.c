@@ -239,7 +239,8 @@ void ssdp_init()
 
 	if (!multicast_join_group(socket_descriptor, configuration.network_multicast, configuration.network_interface))
 	{
-		writelog(LOG_ERR, "Fatal while joining multicast group!");
+		writelog(LOG_ERR, "Fatal error while joining multicast group!");
+		writelog(LOG_ERR, "Do you have multicast-enabled network connectivity?");
 		close(socket_descriptor);
 		socket_descriptor = 0;
 		return;

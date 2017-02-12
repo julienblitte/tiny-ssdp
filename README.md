@@ -1,5 +1,5 @@
 # tiny-ssdp
-Mini SSDP client service, enable network detection and potential basic UPnP services.
+Mini SSDP client announcement service, enable network detection and potential basic UPnP services.
 
 ## Operating Systems
 Designed for **Linux**, especially for Debian based distribution.
