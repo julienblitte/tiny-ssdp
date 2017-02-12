@@ -13,6 +13,7 @@ PKG=arch-armhf
 DEB=fakeroot dpkg-deb --build
 CHKDEB=lintian
 LN=ln -s
+MD=mkdir -p
 
 .PHONY: clean deb lintian
 
@@ -30,6 +31,7 @@ clean:
 deb: $(PKG).deb
 
 $(PKG).deb: $(PKG)/usr/sbin/$(EXEC)
+	$(MD) $(PKG)/usr/sbin/ && \
 	$(DEB) $(PKG)
 
 lintian: $(PKG).deb
