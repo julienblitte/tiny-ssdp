@@ -14,4 +14,4 @@ Supports **SSDP** (*UPnP* network detection part) only over **IPv4**.
 Programmed mainly in **C** for *SSDP* part, with some piece in **PHP** for *UPnP* service description.
 
 ## Releases
-* Version 0.2: https://github.com/julienblitte/tiny-ssdp/releases/tag/0.2
+* Version 0.21: https://github.com/julienblitte/tiny-ssdp/releases/tag/0.21
