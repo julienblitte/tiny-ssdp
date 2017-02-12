@@ -217,6 +217,8 @@ void ssdp_handle_request(text request, struct sockaddr_in *client_addr, socklen_
 
 void ssdp_init()
 {
+	int tentatives;
+
 	pthread_mutex_lock(&ssdp_mutex);
 
 	// already initialized
@@ -237,7 +239,15 @@ void ssdp_init()
 		return;
 	}
 
-	if (!multicast_join_group(socket_descriptor, configuration.network_multicast, configuration.network_interface))
+	tentatives = 5;
+	while ((tentatives > 0) && !multicast_join_group(socket_descriptor, configuration.network_multicast, configuration.network_interface))
+	{
+		tentatives--;
+		writelog(LOG_WARNING, "Unable to join multicast group. Tries left = %d", tentatives);
+		sleep(2);
+	}
+
+	if (tentatives > 0)
 	{
 		writelog(LOG_ERR, "Fatal error while joining multicast group!");
 		writelog(LOG_ERR, "Do you have multicast-enabled network connectivity?");

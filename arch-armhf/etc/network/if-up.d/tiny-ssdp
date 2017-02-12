@@ -24,9 +24,9 @@ if [ ! -x "$SCRIPTNAME" ]; then
 fi
 
 runlevel=$(runlevel|cut -d' ' -f 2)
-if [ "$runlevel" != "" ]; then
+if [ "$runlevel" != "" -a "$runlevel" != "unknown" -a -d "/etc/rc$runlevel.d" ]; then
 	# should service be running at current runlevel - Note: SystemV for now
-	ls /etc/rc$runlevel.d/S* -l | grep "$SCRIPTFILE" > /dev/null
+	ls "/etc/rc$runlevel.d"/S* -l | grep "$SCRIPTFILE" > /dev/null
 	if [ $? -ne 0 ]; then
 		exit 0
 	fi
