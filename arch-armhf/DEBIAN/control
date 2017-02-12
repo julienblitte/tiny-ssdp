@@ -1,5 +1,5 @@
 Package: tiny-ssdp
-Version: 0.2
+Version: 0.21
 Architecture: armhf
 Maintainer: Julien Blitte <julien.blitte@gmail.com>
 Installed-Size: 1024
@@ -8,6 +8,6 @@ Conflicts: minissdpd, miniupnpc
 Section: net
 Priority: optional
 Homepage: http://marin.jb.free.fr/tiny-ssdp
-Description: Mini SSDP client service, enable UPnP network detection/services.
- Provide a very small SSDP client service to enable network UPnP detection and
- potential basic UPnP service.
+Description: Mini SSDP client service, enable UPnP network announcement.
+ Provide a very small SSDP client service to enable network UPnP announcement
+ and potential basic UPnP service presentation.

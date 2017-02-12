@@ -2,8 +2,9 @@
 
 set -e
 
-site=tiny-ssdp
+site=tiny-ssdp.conf
 daemon=tiny-ssdp
+apache=/etc/init.d/apache2
 
 if [ -e "/etc/apache2/sites-available/$site" -a -d "/etc/apache2/sites-enabled/" ]
 then 
@@ -11,9 +12,9 @@ then
 	[ -e "$site" ] || ln -sf "../sites-available/$site" .
 fi
 
-if [ -e /etc/init.d/apache2 ]
+if [ -e "$apache" ]
 then
-	invoke-rc.d apache2 restart || :
+	"$apache" restart || :
 fi
 
 update-rc.d -f "$daemon" defaults

@@ -2,9 +2,16 @@
 
 set -e
 
-site=tiny-ssdp
+site=tiny-ssdp.conf
 daemon=tiny-ssdp
+apache=/etc/init.d/apache2
 
 rm -f "/etc/apache2/sites-enabled/$site"
+rm -f "/etc/apache2/sites-available/$site"
 update-rc.d -f "$daemon" remove
+
+if [ -e "$apache" ]
+then
+	"$apache" restart || :
+fi
 
