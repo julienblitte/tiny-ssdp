@@ -118,6 +118,7 @@ void ssdp_notify()
 		}
 	}
 	
+	// lock mutext
 	pthread_mutex_lock(&ssdp_mutex);
 	type=0;
 	notify = ssdp_get_notify(type);
@@ -129,6 +130,7 @@ void ssdp_notify()
 		type++;
 		notify = ssdp_get_notify(type);
 	}
+	// unlock mutex
 	pthread_mutex_unlock(&ssdp_mutex);
 }
 
@@ -167,6 +169,7 @@ void ssdp_handle_request(text request, struct sockaddr_in *client_addr, socklen_
 	const char *reply;
 	struct sockaddr_in local_socket;
 
+	// lock mutex
 	pthread_mutex_lock(&ssdp_mutex);
 	writelog(LOG_DEBUG, "Recieved:");
 	writelog_text(LOG_DEBUG, request);
@@ -212,6 +215,7 @@ void ssdp_handle_request(text request, struct sockaddr_in *client_addr, socklen_
 		writelog(LOG_DEBUG, "Datagram type is NOTIFY\n");
 		// do nothing
 	}
+	// unlock mutex
 	pthread_mutex_unlock(&ssdp_mutex);
 }
 
@@ -219,11 +223,12 @@ void ssdp_init()
 {
 	int tentatives;
 
-	pthread_mutex_lock(&ssdp_mutex);
-
 	// already initialized
 	if (socket_descriptor > 0)
 		return;
+
+	// lock mutex
+	pthread_mutex_lock(&ssdp_mutex);
 
 	writelog(LOG_NOTICE, "Loading configuration...");
 	config_load();
@@ -236,6 +241,8 @@ void ssdp_init()
 	if (!socket_descriptor)
 	{
 		writelog(LOG_ERR, "Fatal error creating or binding datagram socket!");
+		// unlock mutex
+		pthread_mutex_unlock(&ssdp_mutex);
 		return;
 	}
 
@@ -247,14 +254,19 @@ void ssdp_init()
 		sleep(2);
 	}
 
-	if (tentatives > 0)
+	if (tentatives <= 0)
 	{
 		writelog(LOG_ERR, "Fatal error while joining multicast group!");
 		writelog(LOG_ERR, "Do you have multicast-enabled network connectivity?");
 		close(socket_descriptor);
+		// set not to initialized
 		socket_descriptor = 0;
+		// unlock mutex before returning
+		pthread_mutex_unlock(&ssdp_mutex);
 		return;
 	}
+
+	// unlock mutex
 	pthread_mutex_unlock(&ssdp_mutex);
 }
 
