@@ -39,7 +39,7 @@ text ssdp_get_st_match_list()
 		{
 			snprintf(service, sizeof(service), "\nurn:schemas-upnp-org:service:%s:%d",
 					configuration.service_name[i], configuration.service_version[i]);
-			strncat(st_list, service, sizeof(st_list));
+			strncat(st_list, service, sizeof(st_list) - strlen(st_list));
 		}
 	}
 
@@ -285,7 +285,6 @@ void *ssdp_thread_server(void *arg)
 		{
 			writelog(LOG_ERR, "Fatal error while trying to initialize ssdp!");
 			pthread_exit(NULL);
-			return;
 		}
 	}
 
