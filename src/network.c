@@ -23,6 +23,8 @@
 #include <string.h>
 #include <ifaddrs.h>
 #include <stdint.h>
+#include <strings.h>
+#include <unistd.h>
 
 int udp_listen(const int port)
 {

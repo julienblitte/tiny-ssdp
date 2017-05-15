@@ -21,6 +21,7 @@
 #include <pthread.h>
 #include <syslog.h>
 #include <signal.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 

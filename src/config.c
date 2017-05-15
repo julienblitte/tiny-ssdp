@@ -31,6 +31,8 @@
 
 ssdp_param_set configuration;
 
+int str2int(char *s, int *value);
+
 const char *config_dummy_uuid()
 {
 	static char device_uuid[MAX_PARAM];
@@ -66,7 +68,7 @@ void config_init()
 		snprintf(expand_set_default, sizeof(expand_set_default), DEFAULT_SET_STR_SERVICE_NAME, i);
 		configuration.service_name[i] = strdup(expand_set_default); // no memory reserved by default
 
-		snprintf(expand_set_default, sizeof(expand_set_default), DEFAULT_SET_INT_SERVICE_VERSION, i);
+		snprintf(expand_set_default, sizeof(expand_set_default), DEFAULT_SET_INT_SERVICE_VERSION);
 		str2int(expand_set_default, &configuration.service_version[i]);
 	}
 	configuration.ssdp_allowed_cache = DEFAULT_INT_SSDP_ALLOWED_CACHE;

@@ -1,32 +1,44 @@
-CC=gcc
-LD=-lpthread -Os -s -Wl,-z,relro,-z,now
-CP=cp -r
-MAKE=make
-CD=cd
-DAEMON=ssdp
-EXEC=tiny-ssdpd
-RM=rm -f
-SRC=src
-INC=inc
-BIN=bin
-PKG=arch-armhf
-DEB=fakeroot dpkg-deb --build
-CHKDEB=lintian
-LN=ln -s
-MD=mkdir -p
-
 .PHONY: clean deb lintian
 
-$(BIN)/$(EXEC): $(SRC)/main.c $(SRC)/config.c $(SRC)/ssdp.c $(SRC)/network.c $(SRC)/http.c $(SRC)/textutil.c $(SRC)/logfilter.c
-	$(CC) $(LD) -I $(INC) -o $@ $^ 
+CC        = gcc
+CFLAGS    = -Os -s
+CPPFLAGS  = -Iinc
+LDFLAGS   = -Wl,-z,relro,-z,now
+LDLIBS    = -lpthread
+CP        = cp -r
+CD        = cd
+RM        = rm -f
+LN        = ln -s
+MD        = mkdir -p
+SRC       = src
+BIN       = bin
+
+DAEMON    = ssdp
+EXEC      = tiny-ssdpd
+OBJS      = $(SRC)/main.o $(SRC)/config.o $(SRC)/ssdp.o $(SRC)/network.o \
+	    $(SRC)/http.o $(SRC)/textutil.o $(SRC)/logfilter.o
+PKG       = arch-armhf
+DEB       = fakeroot dpkg-deb --build
+CHKDEB    = lintian
+
+.c.o:
+	@printf "  CC      $@\n"
+	@$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+
+all: $(BIN)/$(EXEC)
+
+$(BIN)/$(EXEC): $(OBJS)
+	@printf "  LINK    $@\n"
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)
 
 $(PKG)/usr/sbin/$(EXEC): $(BIN)/$(EXEC)
 	$(CP) $< $@
 
 clean:
-	$(RM) $(BIN)/$(EXEC) && \
-	$(RM) $(PKG)/usr/sbin/$(EXEC) && \
-	$(RM) $(PKG).deb
+	@printf "  CLEAN   $(EXEC)\n"
+	-@$(RM) $(OBJS) $(BIN)/$(EXEC)   \
+		$(PKG)/usr/sbin/$(EXEC)  \
+		$(PKG).deb
 
 deb: $(PKG).deb
 
