@@ -7,6 +7,7 @@
 #include "logfilter.h"
 #define MAX_LINES	1024
 
+// * Warning: returned value must be freed!
 text data2text(char *data)
 {
 	char **result;
@@ -41,6 +42,11 @@ text data2text(char *data)
 	}
 
 	result[i] = NULL;
+
+	if (i < MAX_LINES-1)
+	{
+		result = realloc(result, i+1);
+	}
 
 	return result;
 }

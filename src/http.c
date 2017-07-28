@@ -12,7 +12,7 @@ const char *http_search_variable(text t, const char *variable)
 	size_t len;
 
 	len = strlen(variable)+1;
-	pattern = (char *)malloc(len+1);
+	pattern = (char *)malloc(len+1); // pattern must be freed (1)
 
 	snprintf(pattern, len+1, "%s:", variable);
 
@@ -20,15 +20,16 @@ const char *http_search_variable(text t, const char *variable)
 	{
 		if (!strncasecmp(t[l], pattern, len))
 		{
-			free(pattern);
+			free(pattern); // pattern freed here (1) 1/2
 			return (const char *)(t[l] + len);
 		}
 	}
 
-	free(pattern);
+	free(pattern); // pattern freed here (1) 2/2
 	return NULL;
 }
 
+// * Warning: returned value must be freed
 char *http_dup_clean_value(const char *s)
 {
 	char *result;

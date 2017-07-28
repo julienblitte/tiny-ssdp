@@ -23,6 +23,7 @@ int socket_descriptor = -1;
 
 static pthread_mutex_t ssdp_mutex;
 
+// * Warning: returned value must be freed!
 text ssdp_get_st_match_list()
 {
 	text result;
@@ -174,7 +175,7 @@ void ssdp_handle_request(text request, struct sockaddr_in *client_addr, socklen_
 	writelog(LOG_DEBUG, "Recieved:");
 	writelog_text(LOG_DEBUG, request);
 
-	st_match_list = ssdp_get_st_match_list();
+	st_match_list = ssdp_get_st_match_list(); // st_match_list must be freed (0)
 
 	if (http_type(request) == HTTP_TYPE_SSDP_SEARCH)
 	{
@@ -184,13 +185,13 @@ void ssdp_handle_request(text request, struct sockaddr_in *client_addr, socklen_
 		mx = (char *)http_search_variable(request, "MX");
 		if (st && man)	
 		{
-			man = http_dup_clean_value(man);
+			man = http_dup_clean_value(man); // man must be freed (1)
 			if (!strcasecmp(man, SSDP_MAN_DISCOVER))
 			{
 				writelog(LOG_DEBUG, "ST matching filters are:");
 				writelog_text(LOG_DEBUG, st_match_list);
 
-				st = http_dup_clean_value(st);
+				st = http_dup_clean_value(st); // st must be freed (2)
 				if (str_find_line(st_match_list, st) >= 0)
 				{
 					ssdp_wait_random(atoi(mx));
@@ -205,9 +206,9 @@ void ssdp_handle_request(text request, struct sockaddr_in *client_addr, socklen_
 						writelog(LOG_WARNING, "Error while answering request!");
 					} 
 				}
-				free(st);
+				free(st); // st freed here (2)
 			}
-			free(man);
+			free(man); // man freed here (1)
 		}
 	}
 	else if (http_type(request) == HTTP_TYPE_SSDP_NOTIFY)
@@ -215,6 +216,9 @@ void ssdp_handle_request(text request, struct sockaddr_in *client_addr, socklen_
 		writelog(LOG_DEBUG, "Datagram type is NOTIFY\n");
 		// do nothing
 	}
+
+	free(st_match_list); // st_match_list freed here (0)
+
 	// unlock mutex
 	pthread_mutex_unlock(&ssdp_mutex);
 }
@@ -276,6 +280,7 @@ void *ssdp_thread_server(void *arg)
 
 	struct sockaddr_in client_addr;
 	socklen_t client_size;
+	text text_buffer;
 
 	// not initialized, try to initialize
 	if (socket_descriptor <= 0)
@@ -294,7 +299,9 @@ void *ssdp_thread_server(void *arg)
 	client_size = sizeof(client_addr);
 	while(recvfrom(socket_descriptor, buffer, sizeof(buffer)-1, 0, (struct sockaddr *)&client_addr, &client_size) >= 0)
 	{
-		ssdp_handle_request(data2text(buffer), &client_addr, client_size);
+		text_buffer = data2text(buffer); // text_buffer must be freed (3)
+		ssdp_handle_request(text_buffer, &client_addr, client_size);
+		free(text_buffer); // text_buffer freed here (3)
 
 		memset(buffer, 0, sizeof(buffer));
 		client_size = sizeof(client_addr);
