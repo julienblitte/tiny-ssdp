@@ -1,3 +1,21 @@
+/* Configuration file parser and generator
+ *
+ * Copyright (C) 2017  Julien Blitte <julien.blitte@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,6 +30,8 @@
 #define MAX_LINE 512
 
 ssdp_param_set configuration;
+
+int str2int(char *s, int *value);
 
 const char *config_dummy_uuid()
 {
@@ -48,7 +68,7 @@ void config_init()
 		snprintf(expand_set_default, sizeof(expand_set_default), DEFAULT_SET_STR_SERVICE_NAME, i);
 		configuration.service_name[i] = strdup(expand_set_default); // no memory reserved by default
 
-		snprintf(expand_set_default, sizeof(expand_set_default), DEFAULT_SET_INT_SERVICE_VERSION, i);
+		snprintf(expand_set_default, sizeof(expand_set_default), DEFAULT_SET_INT_SERVICE_VERSION);
 		str2int(expand_set_default, &configuration.service_version[i]);
 	}
 	configuration.ssdp_allowed_cache = DEFAULT_INT_SSDP_ALLOWED_CACHE;

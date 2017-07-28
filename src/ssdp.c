@@ -1,3 +1,21 @@
+/* SSDP API
+ *
+ * Copyright (C) 2017  Julien Blitte <julien.blitte@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -31,6 +49,7 @@ text ssdp_get_st_match_list()
 	static char service[128];
 	int i;
 
+	memset(st_list, 0, sizeof(st_list));
 	snprintf(st_list, sizeof(st_list), "ssdp:all\nuuid:%s\nupnp:rootdevice\nurn:schemas-upnp-org:device:%s:%d",
 		configuration.device_uuid, configuration.device_type_name, configuration.device_type_version);
 
@@ -38,9 +57,15 @@ text ssdp_get_st_match_list()
 	{
 		if (configuration.service_name[i])
 		{
-			snprintf(service, sizeof(service), "\nurn:schemas-upnp-org:service:%s:%d",
+			int slen;
+
+			slen = snprintf(service, sizeof(service), "\nurn:schemas-upnp-org:service:%s:%d",
 					configuration.service_name[i], configuration.service_version[i]);
-			strncat(st_list, service, sizeof(st_list));
+			if (sizeof(st_list) - strlen(st_list) < slen) {
+				writelog(LOG_ERR, "Too many services, skpping %s onward.", service);
+				break;
+			}
+			strncat(st_list, service, strlen(service) + 1);
 		}
 	}
 
@@ -290,7 +315,6 @@ void *ssdp_thread_server(void *arg)
 		{
 			writelog(LOG_ERR, "Fatal error while trying to initialize ssdp!");
 			pthread_exit(NULL);
-			return;
 		}
 	}
 
