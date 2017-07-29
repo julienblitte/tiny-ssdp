@@ -29,13 +29,19 @@ const char *http_search_variable(text t, const char *variable)
 	char *pattern;
 	size_t len;
 
+	fprintf(stderr, "<debug> http_search_variable(\"%p\",\"%s\")\n", t, variable);
+
 	len = strlen(variable)+1;
 	pattern = (char *)malloc(len+1); // pattern must be freed (1)
 
 	snprintf(pattern, len+1, "%s:", variable);
+	fprintf(stderr, "<debug> pattern: \"%s\"\n", pattern);
 
 	for(l=0; t[l]; l++)
 	{
+		fprintf(stderr, "<debug> l=%d\n", l);
+		fprintf(stderr, "<debug> t[l]=%p\n", t[l]);
+		fprintf(stderr, "<debug> strncasecmp(\"%s\",\"%s\")\n", t[l], pattern);
 		if (!strncasecmp(t[l], pattern, len))
 		{
 			free(pattern); // pattern freed here (1) 1/2

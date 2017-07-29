@@ -64,7 +64,7 @@ text data2text(char *data)
 
 	if (i < MAX_LINES-1)
 	{
-		result = realloc(result, i+1);
+		result = realloc(result, sizeof(char*)*(i+1));
 	}
 
 	return result;
