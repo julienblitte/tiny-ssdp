@@ -2,20 +2,26 @@
 
 set -e
 
+# apache
 site=tiny-ssdp.conf
-daemon=tiny-ssdp
-apache=/etc/init.d/apache2
-
-if [ -e "/etc/apache2/sites-available/$site" -a -d "/etc/apache2/sites-enabled/" ]
+if [ -d "/etc/apache2/sites-available/" -a -d "/etc/apache2/sites-enabled/" ]
 then 
+	cp "/usr/lib/tiny-ssdp/apache2/$site" "/etc/apache2/sites-available/"
 	cd "/etc/apache2/sites-enabled/"
-	[ -e "$site" ] || ln -sf "../sites-available/$site" .
+	ln -sf "../sites-available/$site" .
 fi
+invoke-rc.d apache2 restart
 
-if [ -e "$apache" ]
+if which systemd > /dev/null
 then
-	"$apache" restart || :
+	# configure and enable systemd
+	cp -f "/usr/lib/tiny-ssdp/startup/tiny-ssdp.service" /etc/systemd/system/
+	systemctl enable tiny-ssdp.service
+	systemctl start tiny-ssdp.service
+else
+	# configure and enable systemV-init
+	cp -f "/usr/lib/tiny-ssdp/startup/tiny-ssdp" /etc/init.d/
+	update-rc.d -f tiny-ssdp defaults
+	service tiny-ssdp start
 fi
-
-update-rc.d -f "$daemon" defaults
 

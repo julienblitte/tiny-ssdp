@@ -2,7 +2,12 @@
 
 set -e
 
-daemon=tiny-ssdp
-
-invoke-rc.d "$daemon" stop || :
+if which systemd > /dev/null
+then
+	# stop systemd
+	systemctl stop tiny-ssdp.service || :
+else
+	# stop systemV-init
+	service tiny-ssdp stop || :
+fi
 

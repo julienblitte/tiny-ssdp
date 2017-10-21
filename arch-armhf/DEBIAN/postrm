@@ -2,16 +2,19 @@
 
 set -e
 
-site=tiny-ssdp.conf
-daemon=tiny-ssdp
-apache=/etc/init.d/apache2
+# apache2
+rm -f "/etc/apache2/sites-enabled/tiny-ssdp.conf" || :
+rm -f "/etc/apache2/sites-available/tiny-ssdp.conf" || :
+invoke-rc.d apache2 restart || :
 
-rm -f "/etc/apache2/sites-enabled/$site"
-rm -f "/etc/apache2/sites-available/$site"
-update-rc.d -f "$daemon" remove
-
-if [ -e "$apache" ]
+if which systemd > /dev/null
 then
-	"$apache" restart || :
+	# remove sytemd
+	systemctl disable tiny-ssdp.service
+	rm -f "/etc/systemd/system/tiny-ssdp.service" || :
+else
+	# remove systemV-init
+	update-rc.d -f tiny-ssdp remove
+	rm -f "/etc/init.d/tiny-ssdp" || :
 fi
 

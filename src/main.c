@@ -3,16 +3,16 @@
  * Copyright (C) 2017  Julien Blitte <julien.blitte@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <unistd.h>
@@ -87,11 +87,18 @@ int main(int argc, char *argv[])
 	{
 		openlog(SYSLOG_IDENT, LOG_PERROR, LOG_DAEMON);
 	}
+	else if (argc == 2 && strcmp(argv[1], "--no-daemon") == 0)
+	{
+		syslog_filter = LOG_NOTICE;
+		openlog(SYSLOG_IDENT, 0, LOG_DAEMON);
+		writelog(LOG_NOTICE, "Started as angel");
+	}
 	else
 	{
 		daemonize();
 		syslog_filter = LOG_NOTICE;
 		openlog(SYSLOG_IDENT, 0, LOG_DAEMON);
+		writelog(LOG_NOTICE, "Started as deamon");
 	}
 
 	ssdp_init();

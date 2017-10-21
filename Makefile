@@ -31,9 +31,6 @@ $(BIN)/$(EXEC): $(OBJS)
 	@printf "  LINK    $@\n"
 	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)
 
-$(PKG)/usr/sbin/$(EXEC): $(BIN)/$(EXEC)
-	$(CP) $< $@
-
 clean:
 	@printf "  CLEAN   $(EXEC)\n"
 	-@$(RM) $(OBJS) $(BIN)/$(EXEC)   \
@@ -42,8 +39,9 @@ clean:
 
 deb: $(PKG).deb
 
-$(PKG).deb: $(PKG)/usr/sbin/$(EXEC)
+$(PKG).deb: $(BIN)/$(EXEC)
 	$(MD) $(PKG)/usr/sbin/ && \
+	$(CP) $(BIN)/$(EXEC) $(PKG)/usr/sbin/$(EXEC) && \
 	$(DEB) $(PKG)
 
 lintian: $(PKG).deb
