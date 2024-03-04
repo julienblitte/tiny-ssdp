@@ -1,13 +1,13 @@
 #!/bin/sh
 
-set -e
-
 if which systemd > /dev/null
 then
 	# stop systemd
-	systemctl stop tiny-ssdp.service || :
+	systemctl is-active --quiet tiny-ssdp.service && systemctl stop tiny-ssdp.service
 else
 	# stop systemV-init
 	service tiny-ssdp stop || :
 fi
+
+exit 0
 

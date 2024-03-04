@@ -1,27 +1,47 @@
 #!/bin/sh
 
-set -e
+site=tiny-ssdp
 
-# apache
-site=tiny-ssdp.conf
-if [ -d "/etc/apache2/sites-available/" -a -d "/etc/apache2/sites-enabled/" ]
+# nginx
+if [ -d "/etc/nginx/sites-available/" ]
 then 
-	cp "/usr/lib/tiny-ssdp/apache2/$site" "/etc/apache2/sites-available/"
-	cd "/etc/apache2/sites-enabled/"
-	ln -sf "../sites-available/$site" .
+	cp "/usr/lib/tiny-ssdp/nginx/$site" "/etc/nginx/sites-available/"
+	#if [ -d "/etc/nginx/sites-enabled/" ]
+	#then
+	#	cd "/etc/nginx/sites-enabled/"
+	#	ln -sf "../sites-available/$site" .
+	#	nginx=true
+	#fi
 fi
-invoke-rc.d apache2 restart
+
+# apache2
+if [ -d "/etc/apache2/sites-available/" ]
+then 
+	cp "/usr/lib/tiny-ssdp/apache2/$site.conf" "/etc/apache2/sites-available/"
+	#if [ -d "/etc/apache2/sites-enabled/" ]
+	#then
+	#	cd "/etc/apache2/sites-enabled/"
+	#	ln -sf "../sites-available/$site.conf" .
+	#	apache2=true
+	#fi
+fi
 
 if which systemd > /dev/null
 then
 	# configure and enable systemd
 	cp -f "/usr/lib/tiny-ssdp/startup/tiny-ssdp.service" /etc/systemd/system/
-	systemctl enable tiny-ssdp.service
-	systemctl start tiny-ssdp.service
+	systemctl enable tiny-ssdp.service && systemctl start tiny-ssdp.service
+
+	[ ! -z "$nginx" ] && systemctl reload nginx
+	[ ! -z "$apache2" ] && systemctl restart apache2
 else
 	# configure and enable systemV-init
 	cp -f "/usr/lib/tiny-ssdp/startup/tiny-ssdp" /etc/init.d/
-	update-rc.d -f tiny-ssdp defaults
-	service tiny-ssdp start
+	update-rc.d -f tiny-ssdp defaults && service tiny-ssdp start
+
+	[ ! -z "$nginx" ] && invoke-rc.d nginx reload
+	[ ! -z "$apache2" ] && invoke-rc.d apache2 restart
 fi
+
+exit 0
 

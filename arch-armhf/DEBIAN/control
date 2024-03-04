@@ -1,9 +1,10 @@
 Package: tiny-ssdp
-Version: 0.24
+Version: 0.3
 Architecture: armhf
 Maintainer: Julien Blitte <julien.blitte@gmail.com>
 Installed-Size: 1024
-Depends: libc6, apache2, php5
+Depends: libc6
+Recommends: nginx, php
 Conflicts: minissdpd, miniupnpc
 Section: net
 Priority: optional

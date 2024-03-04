@@ -1,0 +1,19 @@
+server {
+    server_name ssdp;
+    root /usr/lib/tiny-ssdp/www/;
+    index index.html index.php;
+    autoindex off;
+    server_tokens off;
+
+    listen 1900 default_server;
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_index index.php;
+        fastcgi_read_timeout 60s;
+        include fastcgi.conf;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PHP_ADMIN_VALUE session.cookie_secure=On;
+    }
+}

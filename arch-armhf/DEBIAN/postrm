@@ -1,20 +1,39 @@
 #!/bin/sh
 
-set -e
+# nginx
+site=tiny-ssdp
+if [ -f "/etc/nginx/sites-enabled/$site" ]
+then
+	nginx=true
+fi
 
-# apache2
-rm -f "/etc/apache2/sites-enabled/tiny-ssdp.conf" || :
-rm -f "/etc/apache2/sites-available/tiny-ssdp.conf" || :
-invoke-rc.d apache2 restart || :
+if [ -f "/etc/apache2/sites-available/$site.conf" ]
+then
+	apache2=true
+fi
+
+rm -f "/etc/nginx/sites-available/$site"
+rm -f "/etc/nginx/sites-enabled/$site"
+
+rm -f "/etc/apache2/sites-available/$site"
+rm -f "/etc/apache2/sites-enabled/$site"
 
 if which systemd > /dev/null
 then
-	# remove sytemd
-	systemctl disable tiny-ssdp.service
-	rm -f "/etc/systemd/system/tiny-ssdp.service" || :
+	# remove systemd
+	systemctl is-active --quiet tiny-ssdp.service && systemctl disable tiny-ssdp.service
+	rm -f "/etc/systemd/system/tiny-ssdp.service"
+
+	[ ! -z "$nginx" ] && systemctl reload nginx
+	[ ! -z "$apache2" ] && systemctl restart apache2
 else
-	# remove systemV-init
-	update-rc.d -f tiny-ssdp remove
-	rm -f "/etc/init.d/tiny-ssdp" || :
+	# remove SystemV-init
+	update-rc.d -f tiny-ssdp remove || :
+	rm -f "/etc/init.d/tiny-ssdp"
+
+	[ ! -z "$nginx" ] && invoke-rc.d nginx reload
+	[ ! -z "$apache2" ] && invoke-rc.d apache2 restart
 fi
+
+exit 0
 
